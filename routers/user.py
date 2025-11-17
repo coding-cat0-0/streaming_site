@@ -230,6 +230,25 @@ async def end_video(watch_id : int,
 
     return {"message": "Video ended"} 
 
+@router.get('/user/get_url')
+def set_quality(video_id : int, quality : str,
+            session: Session = Depends(get_session)):
+    
+    video = session.select(Videos).where(Videos.id == video_id).first()
+    if quality == "1080p":
+        return video.url_1080p
+    elif quality == "720p":
+        return video.url_720p
+    elif quality == "480p":
+        return video.url_480p
+    elif quality == "360p":
+        return video.url_360p
+    elif quality == "144p":
+        return video.url_144p
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Video not available in this quality")
+        
 @router.post('/user/subscribe')
 async def subscribe(creator_id : int,
               session: Session = Depends(get_session),
